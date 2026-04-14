@@ -1,0 +1,19 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.log
+*.cache
+
+## EF Migrations (optional - keep if you want)
+# Migrations/
+
+## Secrets
+appsettings.Development.json
+secrets.json
+
+## Claude
+.claude/
+**/.claude/

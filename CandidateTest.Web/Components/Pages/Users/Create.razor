@@ -1,0 +1,57 @@
+@page "/users/create"
+@rendermode InteractiveServer
+@using CandidateTest.Web.Data
+@using CandidateTest.Web.Models
+@inject AppDbContext Db
+@inject NavigationManager Nav
+
+<PageTitle>Create User</PageTitle>
+
+<h1>Create User</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <EditForm Model="user" OnValidSubmit="HandleSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" />
+
+            <div class="mb-3">
+                <label class="form-label">First Name</label>
+                <InputText @bind-Value="user.FirstName" class="form-control" />
+                <ValidationMessage For="() => user.FirstName" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Last Name</label>
+                <InputText @bind-Value="user.LastName" class="form-control" />
+                <ValidationMessage For="() => user.LastName" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <InputText @bind-Value="user.Email" class="form-control" />
+                <ValidationMessage For="() => user.Email" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Date of Birth</label>
+                <InputDate @bind-Value="user.DateOfBirth" class="form-control" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Create</button>
+            <a href="/users" class="btn btn-secondary ms-2">Cancel</a>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private User user = new();
+
+    private async Task HandleSubmit()
+    {
+        user.CreatedAt = DateTimeOffset.UtcNow;
+        Db.Users.Add(user);
+        await Db.SaveChangesAsync();
+        Nav.NavigateTo("/users");
+    }
+}

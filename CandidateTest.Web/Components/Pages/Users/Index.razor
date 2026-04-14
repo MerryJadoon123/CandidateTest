@@ -1,0 +1,63 @@
+@page "/users"
+@rendermode InteractiveServer
+@using CandidateTest.Web.Data
+@using CandidateTest.Web.Models
+@using Microsoft.EntityFrameworkCore
+@inject AppDbContext Db
+@inject NavigationManager Nav
+
+<PageTitle>Users</PageTitle>
+
+<h1>Users</h1>
+
+<a href="/users/create" class="btn btn-primary mb-3">Add New User</a>
+
+@if (users == null)
+{
+    <p>Loading...</p>
+}
+else if (!users.Any())
+{
+    <p>No users found.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Date of Birth</th>
+                <th>Created At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in users)
+            {
+                <tr>
+                    <td>@user.FirstName</td>
+                    <td>@user.LastName</td>
+                    <td>@user.Email</td>
+                    <td>@(user.DateOfBirth?.ToString("yyyy-MM-dd") ?? "-")</td>
+                    <td>@user.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>
+                        <a href="/users/@user.Id" class="btn btn-sm btn-info">Details</a>
+                        <a href="/users/@user.Id/edit" class="btn btn-sm btn-warning">Edit</a>
+                        <a href="/users/@user.Id/delete" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<User>? users;
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await Db.Users.OrderBy(u => u.LastName).ThenBy(u => u.FirstName).ToListAsync();
+    }
+}
